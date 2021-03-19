@@ -1,0 +1,52 @@
+
+#include <LiquidCrystal.h>
+
+
+const int LM35 = A0; //declared pin A0 to Temperature Sensor
+const int motor = 13; //declared pin 13 to DC motor
+const int LedRed = 12; //declared pin 12 to RED LED
+const int LedGreen = 11; //declared pin 11 to GREEN LED
+
+
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7); //declared LCD Columms
+
+void setup() {
+  Serial.begin(9600); //Start the Serial Monitor
+  lcd.begin(16, 2); //Start the LCD
+  lcd.print("Automated Plant"); //Print "Automared Plant"
+  lcd.setCursor(0,1); //Set columms 1 and row 2 of LCD
+  lcd.print("Watering System!"); //Print "Watering System!"
+  pinMode(motor, OUTPUT); //declared DC motor as OUTPUT
+  pinMode(LedRed, OUTPUT); //declared RED LED as OUTPUT
+  pinMode(LedGreen, OUTPUT); //declared GREEEN LED as OUTPUT
+  delay(2000); //Wait 2 seconds
+  lcd.clear(); //Clear LCD
+  lcd.print("Temp= "); //Print "Temp= "
+  lcd.setCursor(0,1); //Select columms 1 and row 2 of LCD
+  lcd.print("WaterPump= "); //Print "WaterPump= "
+}
+
+void loop() {
+
+  int value = analogRead(LM35); //Read Temperature sensor value
+  float Temperature = value * 500.0 / 1023.0; //Calculate Temperature
+  lcd.setCursor(6,0); //Select colums 7 and rows 1
+  lcd.print(Temperature); //Print temperature value
+  lcd.setCursor(11,1); //Select columms 12 and rows 2
+  
+
+  if (Temperature > 40){ //Hot
+    digitalWrite(motor, HIGH); //DC motor turn on
+    digitalWrite(LedRed, HIGH); //RED LED turn on
+    digitalWrite(LedGreen, LOW);//GREEN LED turn off
+    lcd.print("ON "); //Print "ON"
+  }
+  else { //cold
+    digitalWrite(motor, LOW); //DC motor turn off
+    digitalWrite(LedRed, LOW); //RED LED turn off
+    digitalWrite(LedGreen, HIGH); //GREEN LED turn on
+    lcd.print("OFF"); //Print "OFF"
+  }
+  
+   delay(1000); //Wait 1 seconds
+}
